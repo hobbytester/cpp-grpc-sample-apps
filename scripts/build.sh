@@ -7,5 +7,5 @@ rm -rf $BUILD_DIR
 mkdir -p $BUILD_DIR
 
 pushd $BUILD_DIR
-cmake .. && make
+cmake .. && make -j 4
 popd
