@@ -10,6 +10,10 @@ void logInfo(std::string message) {
     std::cout << "[INFO] " << message << std::endl;
 }
 
+void logMetadata(std::string key, std::string value) {
+    std::cout << "[INFO] Metadata [" << key << "]:[" << value << "]" << std::endl;
+}
+
 void SignalHandler(int sigNum) {
     logInfo("Handle SIGINT");
     if (gServer != NULL) {
@@ -20,16 +24,28 @@ void SignalHandler(int sigNum) {
 
 class GreeterServiceImpl final : public Greeter::GreeterService::Service {
     grpc::Status SayHi(grpc::ServerContext* context, const Greeter::HiRequest* request, Greeter::HiResponse* response) override {
+        validateClientMetadata(context->client_metadata());
         logInfo("Serving RPC SayHi: " + request->target_name());
         response->set_message("Hi there!");
         return grpc::Status::OK;
     }
 
     grpc::Status SayHiAgain(grpc::ServerContext* context, const Greeter::HiRequest* request, Greeter::HiResponse* response) override {
+        validateClientMetadata(context->client_metadata());
         logInfo("Serving RPC SayHiAgain: " + request->target_name());
         response->set_message("Hello there");
         return grpc::Status::OK;
     }
+
+    private:
+        void validateClientMetadata(std::multimap<grpc::string_ref, grpc::string_ref> metadata) {
+            std::multimap<grpc::string_ref, grpc::string_ref>::iterator itr;
+            for (itr = metadata.begin(); itr != metadata.end(); ++itr) {
+                grpc::string_ref key = itr->first;
+                grpc::string_ref value = itr->second;
+                logMetadata(std::string(key.begin(), key.end()), std::string(value.begin(), value.end()));
+            }
+        }
 };
 
 void RunServer() {
