@@ -6,7 +6,7 @@ PATH="$MY_INSTALL_DIR/bin:$PATH"
 PROTO_FILE="greeter.proto"
 
 PROTO_DIR="./proto"
-GEN_DIR="./gen_sample"
+GEN_DIR="./gen"
 
 protoc -I=$PROTO_DIR --cpp_out=$GEN_DIR "${PROTO_DIR}/${PROTO_FILE}"
 protoc -I=$PROTO_DIR --grpc_out=$GEN_DIR \
