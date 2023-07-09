@@ -25,6 +25,7 @@ class GreeterClient {
 
             Greeter::HiResponse rpcResponse;
             grpc::ClientContext context;
+            context.AddMetadata("caller", "GoodClient");
             grpc::Status status = stub->SayHi(&context, rpcRequest, &rpcResponse);
 
             checkRpcStatus(status, rpcResponse);
@@ -36,6 +37,7 @@ class GreeterClient {
 
             Greeter::HiResponse rpcResponse;
             grpc::ClientContext context;
+            context.AddMetadata("caller", "BadClient");
             grpc::Status status = stub->SayHiAgain(&context, rpcRequest, &rpcResponse);
 
             checkRpcStatus(status, rpcResponse);
